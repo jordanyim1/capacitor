@@ -2,13 +2,23 @@ import UIKit
 import WebKit
 import Cordova
 
+@objc open class CustomWKView: WKWebView {
+    open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if (point.y > bounds.height - 120) || (point.y < 120) {
+            return super.hitTest(point, with: event)
+        }
+        
+        return nil
+    }
+}
+
 @objc open class CAPBridgeViewController: UIViewController {
     private var capacitorBridge: CapacitorBridge?
     public final var bridge: CAPBridgeProtocol? {
         return capacitorBridge
     }
 
-    public fileprivate(set) var webView: WKWebView?
+    public fileprivate(set) var webView: CustomWKView?
 
     public var isStatusBarVisible = true
     public var statusBarStyle: UIStatusBarStyle = .default
@@ -136,7 +146,7 @@ import Cordova
 
      Subclasses can override this method to return a subclass of WKWebView if needed.
      */
-    open func webView(with frame: CGRect, configuration: WKWebViewConfiguration) -> WKWebView {
+    open func webView(with frame: CGRect, configuration: WKWebViewConfiguration) -> CustomWKView {
         return WKWebView(frame: frame, configuration: configuration)
     }
 
